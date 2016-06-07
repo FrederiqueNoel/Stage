@@ -29,20 +29,19 @@ def gradient(A,B,x0,eps, alpha):
 
 def gradientOptimal(A,B,x0,eps):
     x = x0
-    r = np.dot(A,x)
+    r = np.dot(A,x) - np.vdot(x, A.dot(x))*B.dot(x)
+    rn = 1/np.linalg.norm(r,ord=2)*r
+    rn = rn / sqrt(np.vdot(rn, B.dot(rn)))
     vp = CalculCoeff2(A,B,x,r)
     xp = vp[0]*x + vp[1]*r
     i=1
-    lb = np.vdot(xp,np.dot(A,xp))
-    res = np.dot(A,xp) - lb*xp
-    while np.linalg.norm(x-xp,ord=2) > eps:
-        #print(np.linalg.norm(res,ord=2))
+    while sqrt(np.dot(r,np.dot(B,r))) > eps:
         x = xp
-        r = np.dot(A,x)
-        vp = CalculCoeff2(A,B,x,r)
-        xp = vp[0]*x + vp[1]*r
-        lb = np.vdot(xp,np.dot(A,xp))
-        res = np.dot(A,xp) - lb*xp
+        r = np.dot(A,x) - np.vdot(x, A.dot(x))*B.dot(x)
+        rn = 1/np.linalg.norm(r,ord=2)*r
+        rn = rn / sqrt(np.vdot(rn, B.dot(rn)))
+        vp = CalculCoeff2(A,B,x,rn)
+        xp = vp[0]*x + vp[1]*rn
         i = i+1
     print(i)
 
@@ -76,8 +75,8 @@ def gradientConjugue(A,B,x0,eps):
     vp = CalculCoeff2(A,B,x,r)
     xp = vp[0]*x + vp[1]*r
     i=1
-    while np.linalg.norm(x-xp,ord=2) > eps:
-        #print(i)
+    lb = np.vdot(x, A.dot(x))
+    while sqrt(np.dot(r,np.dot(B,r))) > eps:
         p = (xp-x)/np.linalg.norm(xp-x,ord=2)
         p = p / sqrt(np.vdot(p, B.dot(p)))
         x = xp
@@ -118,9 +117,6 @@ def CalculCoeff3(A,B,x,r,p):
     M2[2,0] = np.vdot(p,np.dot(B,x))
     M2[2,1] = np.vdot(p,np.dot(B,r))
     M2[2,2] = np.vdot(p,np.dot(B,p))
-    print(np.linalg.eigh(M2)[0])
-    if np.linalg.eigh(M2)[0].min() < 1e-10:
-        STOP
     (valp,vectp) = sp.linalg.eigh(M1,M2)
     
     return vectp[:,0]
