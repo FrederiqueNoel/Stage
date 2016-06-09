@@ -101,26 +101,21 @@ def gradientConjugueNL(A,B,x0,eps):
     r = np.dot(A,x) - np.vdot(x, A.dot(x))*B.dot(x)
     rn = r / sqrt(np.vdot(r, B.dot(r)))
     vp = CalculCoeff2(A,B,x,rn)
-    print(vp[1])
     xp = vp[0]*x + vp[1]*rn
     s = rn
     i=1
-    while i<100:
-        #while sqrt(np.dot(r,np.dot(B,r))) > eps:
-        #print(sqrt(np.dot(r,np.dot(B,r))))
+    while sqrt(np.dot(r,np.dot(B,r))) > eps:
         x = xp
-        r = np.dot(A,x) - np.vdot(x, A.dot(x))*B.dot(x)
+        rp = np.dot(A,x) - np.vdot(x, A.dot(x))*B.dot(x)
         rnp = r / sqrt(np.vdot(r, B.dot(r)))
-        beta = np.dot(rnp,rnp)/np.dot(rn,rn)
-        #print(beta)
+        beta = np.dot(rp,rp)/np.dot(r,r)
         rn = rnp
+        r = rp
         sn = beta*s + rn
         vp = CalculCoeff2(A,B,x,sn)
         xp = vp[0]*x + vp[1]*sn
-        print(vp[1])
         s=sn
         i = i+1
-    #print(i)
     print(i)
     
     proj = sqrt(np.vdot(xp,np.dot(B,xp)))
