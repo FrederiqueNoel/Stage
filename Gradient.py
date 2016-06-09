@@ -30,16 +30,14 @@ def gradient(A,B,x0,eps, alpha):
 def gradientOptimal(A,B,x0,eps):
     x = x0
     r = np.dot(A,x) - np.vdot(x, A.dot(x))*B.dot(x)
-    rn = 1/np.linalg.norm(r,ord=2)*r
-    rn = rn / sqrt(np.vdot(rn, B.dot(rn)))
+    rn = r / sqrt(np.vdot(r, B.dot(r)))
     vp = CalculCoeff2(A,B,x,r)
     xp = vp[0]*x + vp[1]*r
     i=1
     while sqrt(np.dot(r,np.dot(B,r))) > eps:
         x = xp
         r = np.dot(A,x) - np.vdot(x, A.dot(x))*B.dot(x)
-        rn = 1/np.linalg.norm(r,ord=2)*r
-        rn = rn / sqrt(np.vdot(rn, B.dot(rn)))
+        rn = r / sqrt(np.vdot(r, B.dot(r)))
         vp = CalculCoeff2(A,B,x,rn)
         xp = vp[0]*x + vp[1]*rn
         i = i+1
@@ -51,18 +49,10 @@ def gradientOptimal(A,B,x0,eps):
 
 ## RESOLUTION MATRICE 2x2
 def CalculCoeff2(A,B,x,r):
-    M1 = np.zeros((2,2),dtype=float)
-    M1[0,0] = np.vdot(x,np.dot(A,x))
-    M1[0,1] = np.vdot(x,np.dot(A,r))
-    M1[1,0] = np.vdot(r,np.dot(A,x))
-    M1[1,1] = np.vdot(r,np.dot(A,r))
     
-    M2 = np.zeros((2,2),dtype=float)
-    M2[0,0] = np.vdot(x,np.dot(B,x))
-    M2[0,1] = np.vdot(x,np.dot(B,r))
-    M2[1,0] = np.vdot(r,np.dot(B,x))
-    M2[1,1] = np.vdot(r,np.dot(B,r))
-    
+    v = np.array([x,r])
+    M1 = np.dot(np.dot(v,A),v.transpose())
+    M2 = np.dot(np.dot(v,B),v.transpose())
     (valp,vectp) = sp.linalg.eigh(M1,M2)
     return vectp[:,0]
 
@@ -75,7 +65,6 @@ def gradientConjugue(A,B,x0,eps):
     vp = CalculCoeff2(A,B,x,r)
     xp = vp[0]*x + vp[1]*r
     i=1
-    lb = np.vdot(x, A.dot(x))
     while sqrt(np.dot(r,np.dot(B,r))) > eps:
         p = (xp-x)/np.linalg.norm(xp-x,ord=2)
         p = p / sqrt(np.vdot(p, B.dot(p)))
@@ -96,27 +85,44 @@ def gradientConjugue(A,B,x0,eps):
 ## RESOLUTION MATRICE 3x3
 
 def CalculCoeff3(A,B,x,r,p):
-    M1 = np.zeros((3,3),dtype=float)
-    M1[0,0] = np.vdot(x,np.dot(A,x))
-    M1[0,1] = np.vdot(x,np.dot(A,r))
-    M1[0,2] = np.vdot(x,np.dot(A,p))
-    M1[1,0] = np.vdot(r,np.dot(A,x))
-    M1[1,1] = np.vdot(r,np.dot(A,r))
-    M1[1,2] = np.vdot(r,np.dot(A,p))
-    M1[2,0] = np.vdot(p,np.dot(A,x))
-    M1[2,1] = np.vdot(p,np.dot(A,r))
-    M1[2,2] = np.vdot(p,np.dot(A,p))
+    v = np.array([x,r,p])
+    M1 = np.dot(np.dot(v,A),v.transpose())
+    M2 = np.dot(np.dot(v,B),v.transpose())
     
-    M2 = np.zeros((3,3),dtype=float)
-    M2[0,0] = np.vdot(x,np.dot(B,x))
-    M2[0,1] = np.vdot(x,np.dot(B,r))
-    M2[0,2] = np.vdot(x,np.dot(B,p))
-    M2[1,0] = np.vdot(r,np.dot(B,x))
-    M2[1,1] = np.vdot(r,np.dot(B,r))
-    M2[1,2] = np.vdot(r,np.dot(B,p))
-    M2[2,0] = np.vdot(p,np.dot(B,x))
-    M2[2,1] = np.vdot(p,np.dot(B,r))
-    M2[2,2] = np.vdot(p,np.dot(B,p))
     (valp,vectp) = sp.linalg.eigh(M1,M2)
     
     return vectp[:,0]
+
+
+## GRADIENT CONJUGUE NON LINEAIRE
+
+def gradientConjugueNL(A,B,x0,eps):
+    x = x0
+    r = np.dot(A,x) - np.vdot(x, A.dot(x))*B.dot(x)
+    rn = r / sqrt(np.vdot(r, B.dot(r)))
+    vp = CalculCoeff2(A,B,x,rn)
+    print(vp[1])
+    xp = vp[0]*x + vp[1]*rn
+    s = rn
+    i=1
+    while i<100:
+        #while sqrt(np.dot(r,np.dot(B,r))) > eps:
+        #print(sqrt(np.dot(r,np.dot(B,r))))
+        x = xp
+        r = np.dot(A,x) - np.vdot(x, A.dot(x))*B.dot(x)
+        rnp = r / sqrt(np.vdot(r, B.dot(r)))
+        beta = np.dot(rnp,rnp)/np.dot(rn,rn)
+        #print(beta)
+        rn = rnp
+        sn = beta*s + rn
+        vp = CalculCoeff2(A,B,x,sn)
+        xp = vp[0]*x + vp[1]*sn
+        print(vp[1])
+        s=sn
+        i = i+1
+    #print(i)
+    print(i)
+    
+    proj = sqrt(np.vdot(xp,np.dot(B,xp)))
+    xf = xp/proj
+    return (xf,i)

@@ -16,7 +16,7 @@ ion()
 
 b_inf = -2
 b_sup = 2
-N = 300
+N = 100
 eps = 1.0e-10
 
 ## CALCUL MATRICE
