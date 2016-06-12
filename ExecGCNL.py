@@ -37,10 +37,10 @@ print(min(valp))
 
 ## Affichage solution
 X = np.linspace(b_inf,b_sup,N)
-plt.plot(X,sol)
-plt.show()
+#plt.plot(X,sol)
+#plt.show()
 
-input("Press enter to continue")
+#input("Press enter to continue")
 
 ## Gradient
 vp = np.linalg.eig(Mat)

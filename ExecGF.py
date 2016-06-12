@@ -18,6 +18,8 @@ b_inf = -2
 b_sup = 2
 N = 100
 eps = 1.0e-10
+h = (b_sup-b_inf)/(N-1)
+gamma = h*h
 
 ## CALCUL MATRICE
 
@@ -36,9 +38,9 @@ sol = vectp[:,0]
 ## Affichage solution
 X = np.linspace(b_inf,b_sup,N)
 plt.plot(X,abs(sol))
-#plt.show()
+plt.show()
 
-#input("Press enter to continue")
+input("Press enter to continue")
 
 ## Gradient
 vp = np.linalg.eig(Mat)
@@ -52,10 +54,19 @@ print(alpha2)
 x0 = np.linspace(1,1,N)
 x0 = x0.T
 
-(x,i) = Gradient.gradient(Mat,M,x0,eps,alpha)
-(x2,i2) = Gradient.gradient(Mat,M,x0,eps,alpha2)
+I = np.eye(N,N)
+P = R+gamma*I
 
-plt.plot(X,x)
+E = np.dot(np.linalg.inv(P),Mat)
+print(cond(E))
+print(cond(Mat))
+
+#print(np.linalg.eigh(P)[0])
+
+(x,i) = Gradient.gradient(Mat,M,x0,eps,alpha)
+(x2,i2) = Gradient.gradientP(Mat,M,x0,eps,alpha2,P)
+
+plt.plot(X,x2)
 plt.show()
 
 input("Press enter to continue")
