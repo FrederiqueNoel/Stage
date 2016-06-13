@@ -15,7 +15,7 @@ ion()
 
 b_inf = -2
 b_sup = 2
-N = 300
+N = 100
 eps = 1.0e-10
 h = (b_sup-b_inf)/(N-1)
 gamma = h*h
@@ -61,12 +61,14 @@ print(cond(Mat))
 (x2,i2) = Gradient.gradientConjugueP(Mat,M,x0,eps,P)
 print(i)
 print(i2)
-vec = vp[1]
-ci = np.zeros((len(vec),1),dtype=float)
-for i in range(len(vec)):
-    ci[i] = (np.dot(vec[i],x))**2
 
-absc = range(len(vec))
+
+#vec = vp[1]
+#ci = np.zeros((len(vec),1),dtype=float)
+#for i in range(len(vec)):
+#    ci[i] = (np.dot(vec[i],x))**2
+
+#absc = range(len(vec))
 #plt.bar(absc,ci,0.05)
 
 plt.plot(X,x2)

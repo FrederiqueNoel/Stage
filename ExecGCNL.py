@@ -53,11 +53,11 @@ x0 = x0.T
 I = np.eye(N,N)
 P = R+gamma*I
 
-(x,i) = Gradient.gradientConjugueNL(Mat,M,x0,eps)
-(x2,i2) = Gradient.gradientConjugueNLP(Mat,M,x0,eps,P)
+(x,i) = Gradient.GCNL(Mat,M,x0,eps)
+#(x2,i2) = Gradient.gradientConjugueNLP(Mat,M,x0,eps,P)
 print(i)
-print(i2)
+#print(i2)
 
-plt.plot(X,x2)
+plt.plot(X,x)
 plt.show()
 input("Press enter to continue")
