@@ -15,7 +15,7 @@ ion()
 
 b_inf = -2
 b_sup = 2
-N = 100
+N = 300
 eps = 1.0e-10
 h = (b_sup-b_inf)/(N-1)
 gamma = h*h
@@ -29,7 +29,6 @@ A = Matrice.CalculA(N,b_inf,b_sup)
 
 ## Somme de Rigidite et x^2*Masse
 Mat = R+A
-Mat = R
 
 
 ## Resolution du systeme
@@ -60,6 +59,8 @@ print(cond(E))
 print(cond(Mat))
 (x,i) = Gradient.gradientConjugue(Mat,M,x0,eps)
 (x2,i2) = Gradient.gradientConjugueP(Mat,M,x0,eps,P)
+print(i)
+print(i2)
 vec = vp[1]
 ci = np.zeros((len(vec),1),dtype=float)
 for i in range(len(vec)):

@@ -18,28 +18,45 @@ def gradient(A,B,x0,eps, alpha):
         lb = np.vdot(x_aux,np.dot(A,x_aux))
         r = np.dot(A,x_aux) - lb*x_aux
         i = i+1
-    print(i)
     proj = sqrt(np.vdot(x_aux,np.dot(B,x_aux)))
     xp = x_aux/proj
     return (xp,i)
 
+def gradient2(A,B,x0,eps, alpha):
+    print("DEBUT")
+    x = x0
+    r = np.dot(A,x) - np.vdot(x, A.dot(x))*B.dot(x)
+    print(r)
+    xp = x - alpha*r
+    print(sqrt(np.dot(r,np.dot(B,r))))
+    i=1
+    while i < 1000:
+        x = xp
+        r = np.dot(A,x) - np.vdot(x, A.dot(x))*B.dot(x)
+        xp = x - alpha*r
+        rp = np.dot(A,xp) - np.vdot(xp, A.dot(xp))*B.dot(xp)
+        print(sqrt(np.dot(r,np.dot(B,r))))
+        i = i+1
+    #print(i)
+
+    proj = sqrt(np.vdot(xp,np.dot(B,xp)))
+    xf = xp/proj
+    return (xf,i)
+
 def gradientP(A,B,x0,eps, alpha,P):
     Pre = np.linalg.inv(P)
     x = x0
-    
+    x_aux = x - alpha*np.dot(Pre,np.dot(A,x))
     i=1
-    lb = np.vdot(x,np.dot(A,x))
-    r = np.dot(Pre,np.dot(A,x) - lb*x)
-    x_aux = x - alpha*r
+    lb = np.vdot(x_aux,np.dot(A,x_aux))
+    r = np.dot(A,x_aux) - lb*x_aux
     while np.linalg.norm(r,ord=2) > eps:
         x = x_aux
-        lb = np.vdot(x,np.dot(A,x))
-        r = np.dot(Pre,np.dot(A,x) - lb*x)
-        x_aux = x - alpha*r
-        
+        x_aux = x - alpha*np.dot(A,x)
+        lb = np.vdot(x_aux,np.dot(A,x_aux))
+        r = np.dot(A,x_aux) - lb*x_aux
         i = i+1
-    print(i)
-
+    #print(i)
     proj = sqrt(np.vdot(x_aux,np.dot(B,x_aux)))
     xp = x_aux/proj
     return (xp,i)
@@ -62,8 +79,6 @@ def gradientOptimal(A,B,x0,eps):
         vp = CalculCoeff2(A,B,x,rn)
         xp = vp[0]*x + vp[1]*rn
         i = i+1
-    print(i)
-
     proj = sqrt(np.vdot(xp,np.dot(B,xp)))
     xf = xp/proj
     return (xf,i)
@@ -83,7 +98,7 @@ def gradientOptimalP(A,B,x0,eps,P):
         vp = CalculCoeff2(A,B,x,rn)
         xp = vp[0]*x + vp[1]*rn
         i = i+1
-    print(i)
+
 
     proj = sqrt(np.vdot(xp,np.dot(B,xp)))
     xf = xp/proj
@@ -92,10 +107,9 @@ def gradientOptimalP(A,B,x0,eps,P):
 
 ## RESOLUTION MATRICE 2x2
 def CalculCoeff2(A,B,x,r):
-    
-    v = np.array([x,r])
-    M1 = np.dot(np.dot(v,A),v.transpose())
-    M2 = np.dot(np.dot(v,B),v.transpose())
+    v = np.array([x,r]).T
+    M1 = np.dot(v.T,np.dot(A,v))
+    M2 = np.dot(v.T,np.dot(B,v))
     (valp,vectp) = sp.linalg.eigh(M1,M2)
     return vectp[:,0]
 
@@ -118,7 +132,7 @@ def gradientConjugue(A,B,x0,eps):
         vp = CalculCoeff3(A,B,x,rn,p)
         xp = vp[0]*x + vp[1]*rn + vp[2]*p
         i = i+1
-    print(i)
+    #print(i)
 
     proj = sqrt(np.vdot(xp,np.dot(B,xp)))
     xf = xp/proj
@@ -141,7 +155,7 @@ def gradientConjugueP(A,B,x0,eps,P):
         vp = CalculCoeff3(A,B,x,rn,p)
         xp = vp[0]*x + vp[1]*rn + vp[2]*p
         i = i+1
-    print(i)
+    #print(i)
 
     proj = sqrt(np.vdot(xp,np.dot(B,xp)))
     xf = xp/proj
@@ -150,9 +164,9 @@ def gradientConjugueP(A,B,x0,eps,P):
 ## RESOLUTION MATRICE 3x3
 
 def CalculCoeff3(A,B,x,r,p):
-    v = np.array([x,r,p])
-    M1 = np.dot(np.dot(v,A),v.transpose())
-    M2 = np.dot(np.dot(v,B),v.transpose())
+    v = np.array([x,r,p]).T
+    M1 = np.dot(v.T,np.dot(A,v))
+    M2 = np.dot(v.T,np.dot(B,v))
     
     (valp,vectp) = sp.linalg.eigh(M1,M2)
     
@@ -180,10 +194,37 @@ def gradientConjugueNL(A,B,x0,eps):
         sn = beta*sn + rn
         sn = sn/sqrt(np.vdot(sn, B.dot(sn)))
         vp = CalculCoeff2(A,B,x,sn)
-        print(vp)
         xp = vp[0]*x + vp[1]*sn
         i = i+1
-    print(i)
+    #print(i)
+    
+    proj = sqrt(np.vdot(xp,np.dot(B,xp)))
+    xf = xp/proj
+    return (xf,i)
+
+def gradientConjugueNLP(A,B,x0,eps,P):
+    Pre = np.linalg.inv(P)
+    x = x0
+    r = np.dot(Pre,-np.dot(A,x) + np.vdot(x, A.dot(x))*B.dot(x))
+    rn = r / sqrt(np.vdot(r, B.dot(r)))
+    vp = CalculCoeff2(A,B,x,rn)
+    xp = vp[0]*x + vp[1]*rn
+    sn = rn
+    i=1
+    #while i<100:
+    while sqrt(np.dot(r,np.dot(B,r))) > eps:
+        x = xp
+        rp = np.dot(Pre,- np.dot(A,x) + np.vdot(x, A.dot(x))*B.dot(x))
+        rnp = rp / sqrt(np.vdot(rp, B.dot(rp)))
+        beta = np.dot(rnp,rnp)/np.dot(rn,rn)
+        rn = rnp
+        r = rp
+        sn = beta*sn + rn
+        sn = sn/sqrt(np.vdot(sn, B.dot(sn)))
+        vp = CalculCoeff2(A,B,x,sn)
+        xp = vp[0]*x + vp[1]*sn
+        i = i+1
+    #print(i)
     
     proj = sqrt(np.vdot(xp,np.dot(B,xp)))
     xf = xp/proj

@@ -15,7 +15,7 @@ ion()
 
 b_inf = -2
 b_sup = 2
-N = 100
+N = 300
 eps = 1.0e-10
 h = (b_sup-b_inf)/(N-1)
 gamma = h*h
@@ -60,7 +60,8 @@ print(cond(Mat))
 
 (x,i) = Gradient.gradientOptimal(Mat,M,x0,eps)
 (x2,i2) = Gradient.gradientOptimalP(Mat,M,x0,eps,P)
-
+print(i)
+print(i2)
 
 plt.plot(X,x2)
 plt.show()
