@@ -254,6 +254,45 @@ def GCNL2(A,B,x0,eps):
     xf = xp/proj
     return (xf,i)
 
+def GCNL2P(A,B,x0,eps,P):
+    ## INITIALISATION
+    Pre = np.linalg.inv(P)
+    x = x0/sqrt(np.dot(x0,np.dot(B,x0)))
+    w = np.dot(A,x)
+    l = np.dot(w.T,x)
+    g = w - l*np.dot(B,x)
+    p = np.dot(Pre,g)
+    z = np.dot(A,p)
+    i = 1
+    
+    ## BOUCLE
+    while sqrt(np.dot(g,np.dot(B,g))) > eps:
+        a = np.dot(z.T,x)
+        b = np.dot(z.T,p)
+        c = np.dot(x.T,np.dot(B,p))
+        d = np.dot(p.T,np.dot(B,p))
+        
+        delta = (l*d-b)*(l*d-b) - 4*(b*c-a*d)*(a-l*c)
+        alpha = (l*d-b+sqrt(delta))/(2*(b*c-a*d))
+        l = (l+a*alpha)/(1+c*alpha)
+        gamma = sqrt(1+2*c*alpha+d*alpha*alpha)
+        
+        xp = (x+alpha*p)/gamma
+        w = (w+alpha*z)/gamma
+        gp = w-l*np.dot(B,xp)
+        
+        beta = np.dot(gp,np.dot(Pre,gp))/np.dot(g,np.dot(Pre,g))
+        p = np.dot(Pre,gp) + beta*p
+        z = np.dot(A,p)
+        
+        x = xp
+        g = gp
+        i = i+1
+    
+    proj = sqrt(np.vdot(x,np.dot(B,x)))
+    xf = xp/proj
+    return (xf,i)
+
 def gradientConjugueNLP(A,B,x0,eps,P):
     Pre = np.linalg.inv(P)
     x = x0
