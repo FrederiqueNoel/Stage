@@ -48,10 +48,6 @@ val = sorted(vp[0])
 
 print("Conditionnement de la matrice : ", cond(Mat))
 alpha = 2/(min(vp[0]) + max(vp[0]))
-#alpha = 0.01
-#print(alpha)
-alpha2 = (val[1]-val[0])/(val[N-1]-val[0])
-#print(alpha2)
 x0 = np.linspace(1,1,N)
 x0 = x0.T
 
@@ -64,12 +60,12 @@ print(cond(Mat))
 
 #print(np.linalg.eigh(P)[0])
 
-(x,i) = Gradient.gradient2(Mat,M,x0,eps,alpha)
-#(x2,i2) = Gradient.gradientP(Mat,M,x0,eps,alpha,P)
-print(i)
-#print(i2)
+(x,i) = Gradient.gradient(Mat,M,x0,eps,alpha)
+(x2,i2) = Gradient.gradientP(Mat,M,x0,eps,alpha,P)
+#print(i)
+print(i2)
 
-plt.plot(X,x)
+plt.plot(X,x2)
 plt.show()
 
 input("Press enter to continue")

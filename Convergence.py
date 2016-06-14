@@ -51,8 +51,8 @@ for i in [10,50,100,200] :
     (x3,nbi3[j]) = Gradient.gradientConjugue(Mat,M,x0,eps)
     #(x3,nbi3[j]) = Gradient.gradientConjugueP(Mat,M,x0,eps,P)
     print("Gradient Conjugue RR3 : ",nbi3[j][0])
-    (x4,nbi4[j]) = Gradient.GCNL2(Mat,M,x0,eps)
-    #(x4,nbi4[j]) = Gradient.gradientConjugueNLP(Mat,M,x0,eps,P)
+    (x4,nbi4[j]) = Gradient.GCNL(Mat,M,x0,eps)
+    #(x4,nbi4[j]) = Gradient.GCNLP(Mat,M,x0,eps,P)
     print("Gradient Conjugue Non Lineaire : ",nbi4[j][0])
     (valp,vectp) = sp.linalg.eigh(Mat,M)
     sol = vectp[:,0]

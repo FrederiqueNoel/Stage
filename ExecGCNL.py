@@ -53,8 +53,8 @@ x0 = x0.T
 I = np.eye(N,N)
 P = R+gamma*I
 
-(x,i) = Gradient.GCNL2(Mat,M,x0,eps)
-(x2,i2) = Gradient.GCNL2P(Mat,M,x0,eps,P)
+(x,i) = Gradient.GCNL(Mat,M,x0,eps)
+(x2,i2) = Gradient.GCNLP(Mat,M,x0,eps,P)
 print(i)
 print(i2)
 
