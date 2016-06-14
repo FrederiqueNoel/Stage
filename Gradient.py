@@ -22,6 +22,29 @@ def gradient(A,B,x0,eps, alpha):
     xp = x_aux/proj
     return (xp,i)
 
+def gradient2(A,B,x0,eps, alpha):
+    x = x0
+    x = x/sqrt(np.dot(x,np.dot(B,x)))
+    i=1
+    lb = np.vdot(x,np.dot(A,x))/np.vdot(x,np.dot(B,x))
+    r = np.dot(A,x) - lb*np.dot(B,x)
+    rn = r/sqrt(np.dot(r,np.dot(B,r)))
+    while i<1000:
+        #while sqrt(np.dot(r,np.dot(B,r))) > eps:
+        #print(np.linalg.norm(r,ord=2))
+        print(sqrt(np.dot(r,np.dot(B,r))))
+        xp = x - alpha*rn
+        xp = xp/sqrt(np.dot(xp,np.dot(B,xp)))
+        lb = np.vdot(xp,np.dot(A,xp))/np.vdot(xp,np.dot(B,xp))
+        r = np.dot(A,xp) - lb*np.dot(B,xp)
+        rn = r/sqrt(np.dot(r,np.dot(B,r)))
+        i = i+1
+        x = xp
+    
+    proj = sqrt(np.vdot(x,np.dot(B,x)))
+    xf = x/proj
+    return (xf,i)
+
 def gradientP(A,B,x0,eps,alpha,P):
     Pre = np.linalg.inv(P)
     x = x0
@@ -193,6 +216,43 @@ def GCNL(A,B,x0,eps):
     xf = xp/proj
     return (xf,i)
 
+def GCNL2(A,B,x0,eps):
+## INITIALISATION
+    x = x0/sqrt(np.dot(x0,np.dot(B,x0)))
+    w = np.dot(A,x)
+    l = np.dot(w.T,x)
+    g = w - l*np.dot(B,x)
+    p = g
+    z = np.dot(A,p)
+    i = 1
+
+## BOUCLE
+    while sqrt(np.dot(g,np.dot(B,g))) > eps:
+        a = np.dot(z.T,x)
+        b = np.dot(z.T,p)
+        c = np.dot(x.T,np.dot(B,p))
+        d = np.dot(p.T,np.dot(B,p))
+
+        delta = (l*d-b)*(l*d-b) - 4*(b*c-a*d)*(a-l*c)
+        alpha = (l*d-b+sqrt(delta))/(2*(b*c-a*d))
+        l = (l+a*alpha)/(1+c*alpha)
+        gamma = sqrt(1+2*c*alpha+d*alpha*alpha)
+
+        xp = (x+alpha*p)/gamma
+        w = (w+alpha*z)/gamma
+        gp = w-l*np.dot(B,xp)
+
+        beta = np.dot(gp,gp)/np.dot(g,g)
+        p = gp + beta*p
+        z = np.dot(A,p)
+
+        x = xp
+        g = gp
+        i = i+1
+
+    proj = sqrt(np.vdot(x,np.dot(B,x)))
+    xf = xp/proj
+    return (xf,i)
 
 def gradientConjugueNLP(A,B,x0,eps,P):
     Pre = np.linalg.inv(P)

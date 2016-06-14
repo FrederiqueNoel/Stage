@@ -15,7 +15,7 @@ ion()
 
 b_inf = -2
 b_sup = 2
-N = 100
+N = 300
 eps = 1.0e-10
 h = (b_sup-b_inf)/(N-1)
 gamma = h*h
@@ -53,7 +53,7 @@ x0 = x0.T
 I = np.eye(N,N)
 P = R+gamma*I
 
-(x,i) = Gradient.GCNL(Mat,M,x0,eps)
+(x,i) = Gradient.GCNL2(Mat,M,x0,eps)
 #(x2,i2) = Gradient.gradientConjugueNLP(Mat,M,x0,eps,P)
 print(i)
 #print(i2)
