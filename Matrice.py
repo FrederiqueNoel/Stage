@@ -4,10 +4,6 @@ import numpy as np
 import os
 import scipy as sp
 from scipy import linalg
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-from pylab import *
-ion()
 
 ## FONCTION CALCUL MATRICE
 
@@ -32,19 +28,16 @@ def CalculM(N,a,b):
 ## Calcul xi*xj*Masse
 def CalculA(N,a,b):
     h = (b-a)/(N-1)
-    Mat = zeros((N,N),dtype=float)
-    
-    Mat[0,0] =a*a*2*h/3
-    Mat[0,1] = a*(a+h)*h/6
+    Mat = CalculM(N,a,b)
+    Mat[0,0] =a*a*Mat[0,0]
+    Mat[0,1] = a*(a+h)*Mat[0,1]
     
     for i in range(1,N-1):
-        Mat[i,i-1] = (a+i*h)*(a+(i-1)*h)*h/6
-        Mat[i,i] = (a+i*h)**2*2*h/3
-        Mat[i,i+1] = (a+i*h)*(a+(i+1)*h)*h/6
+        Mat[i,i-1] = (a+i*h)*(a+(i-1)*h)*Mat[i,i-1]
+        Mat[i,i] = (a+i*h)**2*Mat[i,i]
+        Mat[i,i+1] = (a+i*h)*(a+(i+1)*h)*Mat[i,i+1]
     
-    Mat[N-1,N-2] =b*(b-h)*h/6
-    Mat[N-1,N-1] =b*b*2*h/3
-    
+    Mat[N-1,N-2] =b*(b-h)*Mat[N-1,N-2]
+    Mat[N-1,N-1] =b*b*Mat[N-1,N-1]
+
     return Mat
-
-
