@@ -41,3 +41,15 @@ def CalculA(N,a,b):
     Mat[N-1,N-1] =b*b*Mat[N-1,N-1]
 
     return Mat
+
+## Calcul beta phi^4
+
+def CalculNL(N,a,b):
+    h = (b-a)/(N-1)
+    M1 = (7/5*h)*np.eye(N,k=0,dtype=float)
+    M1[0,0] = 11*h/10
+    M1[N-1,N-1] = 11*h/10
+    M2 = 3*h/10*np.eye(N,k=1,dtype=float)
+    M3 = 3*h/10*np.eye(N,k=-1,dtype=float)
+
+    return M1+M2+M3
