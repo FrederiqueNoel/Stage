@@ -27,7 +27,7 @@ nbi2 = np.zeros((4,1),dtype = int)
 nbi3 = np.zeros((4,1),dtype = int)
 h = np.zeros((4,1),dtype = float)
 j = 0
-for i in [50,100,200,500] :
+for i in [30,50,100,200] :
     h[j] = (b_sup - b_inf)/(i-1)
     Mat = Matrice.CalculDF(i,b_inf,b_sup)
     RN = Matrice.CalculDFR(i,b_inf,b_sup)

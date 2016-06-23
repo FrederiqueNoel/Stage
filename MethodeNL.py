@@ -19,14 +19,14 @@ def BackTrack(A,B,C,x,d,r,alpha):
     a = alpha
     
     while f - fp < 0:
-        a = a*0.75
+        a = a*0.80
         xp = x + a*d
         xp = xp/sqrt(np.dot(xp,np.dot(C,xp)))
         l = np.dot(A,xp) + np.dot(B,np.dot(xp,np.dot(xp,xp)))
         rp = l - np.dot(xp.T,l)*np.dot(C,xp)
         fp = sqrt(np.dot(rp,np.dot(C,rp)))
     
-    return (xp,rp)
+    return (xp,rp,a)
 
 def Res2(A,B,x,r,p):
     M = np.zeros((2,2),dtype=float)
@@ -57,11 +57,12 @@ def Grad(A,B,C,x0,eps,alpha,P=None):
     z = np.dot(Pre,rn)
     z = z/sqrt(np.dot(z,np.dot(C,z)))
     i=1
+    a = alpha
     
     while sqrt(np.dot(r,np.dot(C,r))) > eps:
         #print(sqrt(np.dot(r,np.dot(C,r))))
         
-        (xp,rp) = BackTrack(A,B,C,x,-z,r,alpha)
+        (xp,rp,a) = BackTrack(A,B,C,x,-z,r,a)
         rn = rp/sqrt(np.dot(rp,np.dot(C,rp)))
         z = np.dot(Pre,rn)
         z = z/sqrt(np.dot(z,np.dot(C,z)))
