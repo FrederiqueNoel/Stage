@@ -63,3 +63,12 @@ def CalculDF(N,a,b):
     for i in range(N):
         A[i,i] = A[i,i] + (a+i*h)**2
     return A
+
+def CalculDFR(N,a,b):
+    h = (b-a)/(N-1)
+    M1 = 2/(h*h)*np.eye(N,k=0,dtype=float)
+    M2 = -1/(h*h)*np.eye(N,k=1,dtype=float)
+    M3 = -1/(h*h)*np.eye(N,k=-1,dtype=float)
+    A = M1+M2+M3
+    return A
+

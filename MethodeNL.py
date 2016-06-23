@@ -82,7 +82,8 @@ def GradO(A,B,C,x0,eps,P=None):
     x = x0/sqrt(np.dot(x0.T,np.dot(C,x0)))
     l = np.dot(A,x) + np.dot(B,np.dot(x,np.dot(x,x)))
     r = l - np.dot(x.T,l)*np.dot(C,x)
-    d = r - np.dot(r,np.dot(C,x))*x
+    z = np.dot(Pre,r)
+    d = z - np.dot(z,np.dot(C,x))*x
     gamma = 1/sqrt(np.dot(d.T,np.dot(C,d)))
     d = d*gamma
     i = 1
@@ -95,7 +96,8 @@ def GradO(A,B,C,x0,eps,P=None):
         x = x/sqrt(np.dot(x.T,np.dot(C,x)))
         l = np.dot(A,x) + np.dot(B,np.dot(x,np.dot(x,x)))
         r = l - np.dot(x.T,l)*np.dot(C,x)
-        d = r - np.dot(r,np.dot(C,x))*x
+        z = np.dot(Pre,r)
+        d = z - np.dot(z,np.dot(C,x))*x
         gamma = 1/sqrt(np.dot(d.T,np.dot(C,d)))
         d = d*gamma
 
@@ -103,6 +105,40 @@ def GradO(A,B,C,x0,eps,P=None):
 
     x = x/sqrt(np.dot(x.T,np.dot(C,x)))
     return(x,i)
+
+def GradOP(A,B,C,x0,eps,P=None):
+    if P is None:
+        Pre = np.eye(x0.size)
+    else:
+        Pre = np.linalg.inv(P)
+    
+    x = x0/sqrt(np.dot(x0.T,np.dot(C,x0)))
+    l = np.dot(A,x) + np.dot(B,np.dot(x,np.dot(x,x)))
+    r = l - np.dot(x.T,l)*np.dot(C,x)
+    z = np.dot(Pre,r)
+    d = z - np.dot(z,np.dot(C,x))*x
+    gamma = 1/sqrt(np.dot(d.T,np.dot(C,d)))
+    d = d*gamma
+    i = 1
+    
+    while sqrt(np.dot(r.T,np.dot(C,r))) > eps:
+        grad = 2*l
+        lap = 2*np.dot(A,d) + 6*np.dot(B,np.dot(x,np.dot(x,d)))
+        theta = -np.dot(grad,d)/(np.dot(lap,d)-np.dot(grad,d))
+        x = np.cos(theta)*x + np.sin(theta)*d
+        x = x/sqrt(np.dot(x.T,np.dot(C,x)))
+        l = np.dot(A,x) + np.dot(B,np.dot(x,np.dot(x,x)))
+        r = l - np.dot(x.T,l)*np.dot(C,x)
+        z = np.dot(Pre,r)
+        d = z - np.dot(z,np.dot(C,x))*x
+        gamma = 1/sqrt(np.dot(d.T,np.dot(C,d)))
+        d = d*gamma
+        
+        i=i+1
+    
+    x = x/sqrt(np.dot(x.T,np.dot(C,x)))
+    return(x,i)
+
 
 def GradC(A,B,C,x0,eps,P=None):
     if P is None:
@@ -113,7 +149,8 @@ def GradC(A,B,C,x0,eps,P=None):
     x = x0/sqrt(np.dot(x0.T,np.dot(C,x0)))
     l = np.dot(A,x) + np.dot(B,np.dot(x,np.dot(x,x)))
     r = l - np.dot(x.T,l)*np.dot(C,x)
-    d = r - np.dot(r,np.dot(C,x))*x
+    m = np.dot(Pre,r)
+    d = m - np.dot(m,np.dot(C,x))*x
     gamma = 1/sqrt(np.dot(d.T,np.dot(C,d)))
     d = d*gamma
     grad = 2*l
@@ -127,7 +164,8 @@ def GradC(A,B,C,x0,eps,P=None):
     while sqrt(np.dot(r.T,np.dot(C,r))) > eps:
         l = np.dot(A,xp) + np.dot(B,np.dot(xp,np.dot(xp,xp)))
         r = l - np.dot(xp.T,l)*np.dot(C,xp)
-        d = r - np.dot(r,np.dot(C,xp))*xp
+        m = np.dot(Pre,r)
+        d = m - np.dot(m,np.dot(C,x))*x
         gamma = 1/sqrt(np.dot(d.T,np.dot(C,d)))
         d = d*gamma
 
@@ -144,3 +182,5 @@ def GradC(A,B,C,x0,eps,P=None):
 
     x = xp/sqrt(np.dot(xp.T,np.dot(C,xp)))
     return(x,i)
+
+

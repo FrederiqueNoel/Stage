@@ -26,7 +26,7 @@ b_sup = 2
 N = 100
 eps = 1.0e-10
 h = (b_sup-b_inf)/(N-1)
-gamma = h
+gamma = 10
 beta = 1
 
 ## CALCUL MATRICE
@@ -36,11 +36,12 @@ M = Matrice.CalculM(N,b_inf,b_sup)
 A = Matrice.CalculA(N,b_inf,b_sup)
 NL = Matrice.CalculNL(N,b_inf,b_sup)
 
-
+RN = Matrice.CalculDFR(N,b_inf,b_sup)
 ## Somme de Rigidite et x^2*Masse
 #Mat = R+A
 
 Mat = Matrice.CalculDF(N,b_inf,b_sup)
+
 
 ## On veut resoudre Mat*x + NL*x^3 = l * M*x
 
@@ -56,7 +57,8 @@ x0 = np.linspace(1,1,N)
 x0 = x0.T
 
 I = np.eye(N,N)
-Pre = R+gamma*I
+Pre = RN+gamma*I
+
 
 if methode == '0':
     (x,i) = MethodeNL.Grad(Mat,2*beta*I,I,x0,eps,alpha)
@@ -84,8 +86,8 @@ elif methode == '2':
     (x,i) = MethodeNL.GradC(Mat,2*beta*I,I,x0,eps)
     (x2,i2) = MethodeNL.GradC(Mat,2*beta*I,I,x0,eps, P=Pre)
     
-    print("Nombre d'iterations gradient conjugue RR3 : ", i)
-    print("Nombre d'iterations gradient conjugue RR3 avec preconditionneur: ",i2)
+    print("Nombre d'iterations gradient conjugue : ", i)
+    print("Nombre d'iterations gradient conjugue avec preconditionneur: ",i2)
     plt.plot(X,x)
     plt.plot(X,x2)
     plt.show()
