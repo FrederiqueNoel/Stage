@@ -15,17 +15,17 @@ ion()
 ## EXECUTION PROBLEME LINEAIRE
 
 
-methode = Argument.mainE(sys.argv[1:])
+methode = Argument.mainEL(sys.argv[1:])
 
 
 ## DONNEES
 
 b_inf = -2
 b_sup = 2
-N = 100
+N = 700
 eps = 1.0e-10
 h = (b_sup-b_inf)/(N-1)
-gamma = h*h
+gamma = h
 
 ## CALCUL MATRICE
 
@@ -42,8 +42,8 @@ sol = vectp[:,0]
 
 ## Affichage solution
 X = np.linspace(b_inf,b_sup,N)
-plt.plot(X,sol)
-plt.show()
+#plt.plot(X,sol)
+#plt.show()
 
 #input("Press enter to continue")
 
@@ -93,13 +93,19 @@ elif methode == '2':
     input("Press enter to continue")
 
 elif methode == '3':
-    (x,i) = MethodeL.GCNL(Mat,M,x0,eps)
-    (x2,i2) = MethodeL.GCNL(Mat,M,x0,eps, P=Pre)
+    (x,i,res) = MethodeL.GCNL(Mat,M,x0,eps)
+    (x2,i2,res2) = MethodeL.GCNL(Mat,M,x0,eps, P=Pre)
     
     print("Nombre d'iterations gradient conjugue non lineaire : ", i)
     print("Nombre d'iterations gradient conjugue non lineaire avec preconditionneur: ",i2)
-    plt.plot(X,x)
-    plt.plot(X,x2)
+    #plt.plot(X,x)
+    #plt.plot(X,x2)
+    X = linspace(1,i,i)
+    #print(X)
+    #print(res)
+    plt.plot(X,res)
+    plt.yscale('log')
+    plt.xscale('log')
     plt.show()
     input("Press enter to continue")
 

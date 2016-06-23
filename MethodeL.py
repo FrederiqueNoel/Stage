@@ -71,6 +71,7 @@ def GCRR(A,B,x0,eps,P=None):
         xp = vp[0]*x + vp[1]*z + vp[2]*p
         i = i+1
     
+    
     xp = xp/sqrt(np.dot(xp,np.dot(B,xp)))
     return (xp,i)
 
@@ -81,17 +82,22 @@ def GCNL(A,B,x0,eps,P=None):
         Pre = np.linalg.inv(P)
 
     ## INITIALISATION
-
+    res = []
+    N = np.size(x0)
+    k = N%500+100
     x = x0/sqrt(np.dot(x0,np.dot(B,x0)))
     w = np.dot(A,x)
     l = np.dot(w.T,x)
     g = w - l*np.dot(B,x)
+    res.append(sqrt(np.dot(g,np.dot(B,g))))
     p = np.dot(Pre,g)
     z = np.dot(A,p)
+    beta = 0
     i = 1
     
     ## BOUCLE
     while sqrt(np.dot(g,np.dot(B,g))) > eps:
+        #print(sqrt(np.dot(g,np.dot(B,g))))
         a = np.dot(z.T,x)
         b = np.dot(z.T,p)
         c = np.dot(x.T,np.dot(B,p))
@@ -107,13 +113,16 @@ def GCNL(A,B,x0,eps,P=None):
         gp = w-l*np.dot(B,xp)
         
         beta = np.dot(gp,np.dot(Pre,gp))/np.dot(g,np.dot(Pre,g))
+        if i%k== 0:
+            beta = 0
         p = np.dot(Pre,gp) + beta*p
         z = np.dot(A,p)
-        
         x = xp
         g = gp
         i = i+1
+        res.append(sqrt(np.dot(g,np.dot(B,g))))
+
     
     proj = sqrt(np.vdot(x,np.dot(B,x)))
     xf = xp/proj
-    return (xf,i)
+    return (xf,i,res)

@@ -53,3 +53,13 @@ def CalculNL(N,a,b):
     M3 = 3*h/10*np.eye(N,k=-1,dtype=float)
 
     return M1+M2+M3
+
+def CalculDF(N,a,b):
+    h = (b-a)/(N-1)
+    M1 = 2/(h*h)*np.eye(N,k=0,dtype=float)
+    M2 = -1/(h*h)*np.eye(N,k=1,dtype=float)
+    M3 = -1/(h*h)*np.eye(N,k=-1,dtype=float)
+    A = M1+M2+M3
+    for i in range(N):
+        A[i,i] = A[i,i] + (a+i*h)**2
+    return A
