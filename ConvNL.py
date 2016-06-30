@@ -16,8 +16,8 @@ ion()
 b_inf = -2
 b_sup = 2
 N = 100
-eps = 1.0e-10
-beta = 1
+eps = 1.0e-09
+beta = 10
 gamma = 10
 
 pre = Argument.mainC(sys.argv[1:])

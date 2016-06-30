@@ -24,10 +24,10 @@ methode = Argument.mainENL(sys.argv[1:])
 b_inf = -2
 b_sup = 2
 N = 100
-eps = 1.0e-10
+eps = 1.0e-11
 h = (b_sup-b_inf)/(N-1)
-gamma = 10
-beta = 1
+beta = 10
+gamma = beta
 
 ## CALCUL MATRICE
 
@@ -84,12 +84,12 @@ elif methode == '1':
 
 elif methode == '2':
     (x,i) = MethodeNL.GradC(Mat,2*beta*I,I,x0,eps)
-    (x2,i2) = MethodeNL.GradC(Mat,2*beta*I,I,x0,eps, P=Pre)
+    #(x2,i2) = MethodeNL.GradC(Mat,2*beta*I,I,x0,eps, P=Pre)
     
     print("Nombre d'iterations gradient conjugue : ", i)
-    print("Nombre d'iterations gradient conjugue avec preconditionneur: ",i2)
+    #print("Nombre d'iterations gradient conjugue avec preconditionneur: ",i2)
     plt.plot(X,x)
-    plt.plot(X,x2)
+    #plt.plot(X,x2)
     plt.show()
     input("Press enter to continue")
 

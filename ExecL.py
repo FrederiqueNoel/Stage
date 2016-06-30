@@ -22,7 +22,7 @@ methode = Argument.mainEL(sys.argv[1:])
 
 b_inf = -2
 b_sup = 2
-N = 700
+N = 50
 eps = 1.0e-10
 h = (b_sup-b_inf)/(N-1)
 gamma = h
@@ -35,6 +35,7 @@ A = Matrice.CalculA(N,b_inf,b_sup)
 
 ## Somme de Rigidite et x^2*Masse
 Mat = R+A
+Mat = Matrice.CalculDF(N,b_inf,b_sup)
 
 ## Resolution du systeme
 (valp,vectp) = sp.linalg.eigh(Mat,M)
@@ -53,6 +54,7 @@ alpha = 2/(min(vp[0]) + max(vp[0]))
 
 ## Vecteur Initial
 x0 = np.linspace(1,1,N)
+
 x0 = x0.T
 
 ## Preconditionner
@@ -60,13 +62,14 @@ I = np.eye(N,N)
 Pre = R+gamma*I
 
 if methode == '0':
-    (x,i) = MethodeL.Grad(Mat,M,x0,eps,alpha)
-    (x2,i2) = MethodeL.Grad(Mat,M,x0,eps,alpha,P=Pre)
+    #(x,i) = MethodeL.Grad(Mat,M,x0,eps,alpha)
+    (x,i) = MethodeL.Grad(Mat,I,x0,eps,alpha)
+    #(x2,i2) = MethodeL.Grad(Mat,M,x0,eps,alpha,P=Pre)
 
     print("Nombre d'iterations gradient à pas fixe : ", i)
-    print("Nombre d'iterations gradient à pas fixe avec preconditionneur: ",i2)
+    #print("Nombre d'iterations gradient à pas fixe avec preconditionneur: ",i2)
     plt.plot(X,x)
-    plt.plot(X,x2)
+    #plt.plot(X,x2)
     plt.show()
     input("Press enter to continue")
 
@@ -84,6 +87,8 @@ elif methode == '1':
 elif methode == '2':
     (x,i) = MethodeL.GCRR(Mat,M,x0,eps)
     (x2,i2) = MethodeL.GCRR(Mat,M,x0,eps, P=Pre)
+    #(x,i) = MethodeL.GCRR(Mat,I,x0,eps)
+    #(x2,i2) = MethodeL.GCRR(Mat,I,x0,eps, P=Pre)
     
     print("Nombre d'iterations gradient conjugue RR3 : ", i)
     print("Nombre d'iterations gradient conjugue RR3 avec preconditionneur: ",i2)
